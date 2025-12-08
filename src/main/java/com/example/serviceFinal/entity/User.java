@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "User")
@@ -16,27 +17,61 @@ public class User {
   private Integer id;
 
   @Column(name = "name")
+  @NotBlank(message = "Name is required")
+  @Size(
+    min = 3,
+    max = 30,
+    message = "Name has more than three letter and less than 30 letter."
+  )
   private String name;
 
   @Column(name = "number")
+  @NotNull(message = "Phone number is required")
+  @Positive(message = "Number must be positive")
+  @Digits(
+    integer = 10,
+    fraction = 0,
+    message = "Phone number must be 10 digits."
+  )
   private long number;
 
   @Column(name = "email")
+  @NotBlank(message = "Email is required")
+  @Email(message = "Email should be vaild.")
+  @Pattern(regexp = ".+@.+\\..+", message = "Email must be valid format")
   private String email;
 
   @Column(name = "password")
+  @NotBlank(message = "Password is required")
+  @Size(
+    min = 6,
+    max = 20,
+    message = "Password must be between 6 and 20 characters"
+  )
   private String password;
 
   @Column(name = "role")
+  @NotBlank(message = "Role is required")
+  @Pattern(
+    regexp = "^(user|admin|moderator)$",
+    message = "Role must be user, admin, or moderator"
+  )
   private String role;
 
   @Column(name = "location")
+  @Size(max = 50, message = "Location cannot exceed 50 characters")
   private String location;
 
   @Column(name = "dob")
+  @Pattern(
+    regexp = "^\\d{4}/\\d{2}/\\d{2}$",
+    message = "Date must be in yyyy/MM/dd format"
+  )
   private String dob;
 
   @Column(name = "otp")
+  @Size(min = 6, max = 6, message = "OTP must be exactly 6 digits")
+  @Pattern(regexp = "\\d{6}", message = "OTP must contain only digits")
   private String otp;
 
   public User() {}
@@ -45,7 +80,6 @@ public class User {
     String name,
     long number,
     String email,
-    String password,
     String role,
     String location,
     String dob,
@@ -54,7 +88,6 @@ public class User {
     this.name = name;
     this.number = number;
     this.email = email;
-    this.password = password;
     this.role = role;
     this.location = location;
     this.dob = dob;
