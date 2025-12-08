@@ -1,22 +1,25 @@
 package com.example.serviceFinal.controller;
 
+import com.example.serviceFinal.entity.User;
+import com.example.serviceFinal.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-  @PostMapping("/add")
-  public String postMethodName(@RequestBody String entity) {
-    //TODO: process POST request
+  @Autowired
+  private UserRepository userRepository;
 
-    return entity;
+  @PostMapping("/add")
+  @ResponseStatus(code = HttpStatus.CREATED)
+  public void CreateStudent(@RequestBody User user) {
+    userRepository.save(user);
   }
-  // @GetMapping("/")
-  // public List<User> getUser() {
-  //   return "umesh joshi";
-  // }
 }
