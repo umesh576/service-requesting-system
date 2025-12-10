@@ -3,7 +3,6 @@ package com.example.serviceFinal.controller;
 import com.example.serviceFinal.entity.User;
 import com.example.serviceFinal.repository.UserRepository;
 
-import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +22,7 @@ public class UserController {
 
   @PostMapping("/add")
   @ResponseStatus(code = HttpStatus.CREATED)
-  public ResponseEntity<?> CreateStudent(@Valid @RequestBody User user) {
+  public ResponseEntity<?> CreateStudent( @RequestBody User user) {
     try {
     User savedUser = userRepository.save(user);
     return ResponseEntity.ok(savedUser);
