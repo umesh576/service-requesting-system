@@ -34,4 +34,56 @@ public class Service {
     message = "Description name must be more than 20 character and less than 5000 character"
   )
   private String description;
+
+  @Column(name = "serviceImage")
+  private String serviceImage;
+
+  public Service() {}
+
+  public Integer getId() {
+    return Id;
+  }
+
+  public void setId(Integer id) {
+    Id = id;
+  }
+
+  public String getServiceName() {
+    return serviceName;
+  }
+
+  public void setServiceName(String serviceName) {
+    this.serviceName = serviceName;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getServiceImage() {
+    return serviceImage;
+  }
+
+  public void setServiceImage(String serviceImage) {
+    this.serviceImage = serviceImage;
+  }
+
+  @Override
+  public String toString() {
+    return (
+      "Service [Id=" +
+      Id +
+      ", serviceName=" +
+      serviceName +
+      ", description=" +
+      description +
+      ", serviceImage=" +
+      serviceImage +
+      "]"
+    );
+  }
 }

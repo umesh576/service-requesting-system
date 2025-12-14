@@ -67,6 +67,12 @@
     <groupId>org.springframework.security</groupId>
     <artifactId>spring-security-crypto</artifactId>
 </dependency>
+<!-- Maven -->
+<dependency>
+    <groupId>com.cloudinary</groupId>
+    <artifactId>cloudinary-http44</artifactId>
+    <version>1.38.0</version>
+</dependency>
 
 	</dependencies>
 
