@@ -6,10 +6,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.*;
 
 @Entity
-@Table(name = "User")
+@Table(
+  name = "User",
+  uniqueConstraints = @UniqueConstraint(columnNames = "email")
+)
 public class User {
 
   @Id
@@ -35,7 +39,7 @@ public class User {
   )
   private long number;
 
-  @Column(name = "email")
+  @Column(name = "email", unique = true, nullable = false)
   @NotBlank(message = "Email is required")
   @Email(message = "Email should be vaild.")
   @Pattern(regexp = ".+@.+\\..+", message = "Email must be valid format")
@@ -45,18 +49,17 @@ public class User {
   @NotBlank(message = "Password is required")
   @Size(
     min = 6,
-    max = 20,
+    max = 100,
     message = "Password must be between 6 and 20 characters"
   )
   private String password;
 
   @Column(name = "role")
-  @NotBlank(message = "Role is required")
   @Pattern(
     regexp = "^(user|admin|moderator)$",
     message = "Role must be user, admin, or moderator"
   )
-  private String role;
+  private String role = "user";
 
   @Column(name = "location")
   @Size(max = 50, message = "Location cannot exceed 50 characters")
