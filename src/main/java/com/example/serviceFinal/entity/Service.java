@@ -1,6 +1,7 @@
 package com.example.serviceFinal.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+// import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,10 +46,24 @@ public class Service {
 
   // Many-to-One relationship with Location
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "location_id", nullable = false)
+  @JoinColumn
+  /*(name = "location_id", nullable = false)*/
   @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
   @NotNull(message = "Location is required")
   private Location location;
+
+  @Column(name = "price")
+  // @NotBlank(message = "Price is mandatory")
+  @NotNull(message = "Price is mandatory.")
+  private Double price;
+
+  public Double getPrice() {
+    return price;
+  }
+
+  public void setPrice(Double price) {
+    this.price = price;
+  }
 
   public void setLocation(Location location) {
     this.location = location;
@@ -103,6 +118,9 @@ public class Service {
       description +
       ", serviceImage=" +
       serviceImage +
+      "]" +
+      "price=[" +
+      price +
       "]"
     );
   }
