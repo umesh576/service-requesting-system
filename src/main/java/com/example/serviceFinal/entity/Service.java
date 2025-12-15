@@ -1,12 +1,17 @@
 package com.example.serviceFinal.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -37,6 +42,21 @@ public class Service {
 
   @Column(name = "serviceImage")
   private String serviceImage;
+
+  // Many-to-One relationship with Location
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "location_id", nullable = false)
+  @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+  @NotNull(message = "Location is required")
+  private Location location;
+
+  public void setLocation(Location location) {
+    this.location = location;
+  }
+
+  public Location getLocation() {
+    return location;
+  }
 
   public Service() {}
 
