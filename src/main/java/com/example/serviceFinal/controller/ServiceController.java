@@ -23,15 +23,49 @@ public class ServiceController {
   @Autowired
   private CloudinaryService cloudinaryservice;
 
+  // @PostMapping("/create")
+  // public ResponseEntity<?> CreateService(
+  //   @RequestParam("serviceName") String serviceName,
+  //   @RequestParam("description") String description,
+  //   @RequestParam(value = "image", required = false) MultipartFile serviceImage
+  // ) {
+  //   Service service = new Service();
+  //   service.setServiceName(serviceName);
+  //   service.setDescription(description); // Upload image if provided
+  //   if (serviceImage != null && !serviceImage.isEmpty()) {
+  //     try {
+  //       String imageUrl = cloudinaryservice.uploadFile(
+  //         serviceImage,
+  //         "services"
+  //       );
+  //       service.setServiceImage(imageUrl);
+  //     } catch (IOException e) {
+  //       return ResponseEntity.badRequest()
+  //         .body("Image upload failed: " + e.getMessage());
+  //     }
+  //   }
+
+  //   Service savedService = servicerepositry.save(service);
+  //   return ResponseEntity.ok(savedService);
+  // }
   @PostMapping("/create")
   public ResponseEntity<?> CreateService(
     @RequestParam("serviceName") String serviceName,
     @RequestParam("description") String description,
+    @RequestParam("price") Double price,
+    @RequestParam("locationId") Integer locationId,
     @RequestParam(value = "image", required = false) MultipartFile serviceImage
   ) {
     Service service = new Service();
     service.setServiceName(serviceName);
-    service.setDescription(description); // Upload image if provided
+    service.setDescription(description);
+    service.setPrice(price);
+
+    // Set location (you'll need to fetch it from repository)
+    // Location location = locationRepository.findById(locationId).orElseThrow();
+    // service.setLocation(location);
+
+    // Upload image if provided
     if (serviceImage != null && !serviceImage.isEmpty()) {
       try {
         String imageUrl = cloudinaryservice.uploadFile(

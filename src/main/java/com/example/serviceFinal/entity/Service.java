@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -49,8 +50,21 @@ public class Service {
   @JoinColumn
   /*(name = "location_id", nullable = false)*/
   @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-  @NotNull(message = "Location is required")
+  // @NotNull(message = "Location is required")
   private Location location;
+
+  @Transient // This field won't be persisted in DB
+  private Integer locationId;
+
+  // Custom setter for locationId
+  public void setLocationId(Integer locationId) {
+    this.locationId = locationId;
+  }
+
+  // Get locationId from the Location object
+  public Integer getLocationId() {
+    return this.location != null ? this.location.getId() : null;
+  }
 
   @Column(name = "price")
   // @NotBlank(message = "Price is mandatory")

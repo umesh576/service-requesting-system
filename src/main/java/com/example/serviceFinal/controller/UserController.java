@@ -73,4 +73,10 @@ public class UserController {
     userRepository.save(savedUser);
     return ResponseEntity.ok(savedUser);
   }
+  // @PostMapping("/login")
+  // public ResponseEntity<?> loginUser(@RequestBody  entity) {
+  //   //TODO: process POST request
+
+  //   return entity;
+  // }
 }
