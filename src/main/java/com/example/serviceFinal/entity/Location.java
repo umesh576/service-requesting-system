@@ -1,6 +1,7 @@
 package com.example.serviceFinal.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,59 +14,97 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(
-  name = "location",
-  uniqueConstraints = { @UniqueConstraint(columnNames = "ServiceAvaliable") }
-)
+@Table(name = "location")
 public class Location {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-  @Column(name = "ServiceAvaliable", unique = true)
-  @NotBlank(message = "Location name is required")
-  @NotNull(message = "Location cannot be null")
-  private String location;
+    @Column(name = "location_name", unique = true)
+    @NotBlank(message = "Location name is required")
+    @NotNull(message = "Location cannot be null")
+    private String locationName;
 
-  // One-to-Many relationship with Service entity
-  @OneToMany(
-    mappedBy = "location",
-    cascade = CascadeType.ALL,
-    fetch = FetchType.LAZY
-  )
-  @JsonIgnore // To prevent infinite recursion in JSON
-  private List<Service> services;
+    @Column(name = "address")
+    private String address;
 
-  // Add more fields if needed (like coordinates)
-  // @Column(name = "latitude")
-  // private Double latitude;
+    @Column(name = "city")
+    private String city;
 
-  // @Column(name = "longitude")
-  // private Double longitude;
-  public Location() {}
+    // One-to-Many relationship with Service entity
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("location") // Better than @JsonIgnore to allow serialization control
+    private List<Service> services = new ArrayList<>();
 
-  public Integer getId() {
-    return id;
-  }
+    // Constructors
+    public Location() {}
 
-  public void setId(Integer id) {
-    this.id = id;
-  }
+    public Location(String locationName, String address, String city) {
+        this.locationName = locationName;
+        this.address = address;
+        this.city = city;
+    }
 
-  public String getLocation() {
-    return location;
-  }
+    // Helper method to add service
+    public void addService(Service service) {
+        services.add(service);
+        service.setLocation(this);
+    }
 
-  public void setLocation(String location) {
-    this.location = location;
-  }
+    // Helper method to remove service
+    public void removeService(Service service) {
+        services.remove(service);
+        service.setLocation(null);
+    }
 
-  @Override
-  public String toString() {
-    return "Location [id=" + id + ", location=" + location + "]";
-  }
+    // Getters and Setters
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getLocationName() {
+        return locationName;
+    }
+
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public List<Service> getServices() {
+        return services;
+    }
+
+    public void setServices(List<Service> services) {
+        this.services = services;
+    }
+
+    @Override
+    public String toString() {
+        return "Location [id=" + id + ", locationName=" + locationName + ", address=" + address + ", city=" + city + "]";
+    }
 }

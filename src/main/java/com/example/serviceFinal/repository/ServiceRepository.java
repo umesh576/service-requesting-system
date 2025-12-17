@@ -1,21 +1,32 @@
 package com.example.serviceFinal.repository;
 
 import com.example.serviceFinal.entity.Service;
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 @Repository
 public interface ServiceRepository extends JpaRepository<Service, Integer> {
-  // Find all services by location id
-  List<Service> findByLocationId(Integer locationId);
+    
+    // Essential methods for your use case:
+    
+    // 1. Find services by location ID
+    List<Service> findByLocationId(Integer locationId);
+    
+    // 2. Find services by location name
+    List<Service> findByLocationLocationName(String locationName);
+    
+    // 3. Check if service exists by name in a location
+    boolean existsByServiceNameAndLocationId(String serviceName, Integer locationId);
+    
+    // 4. Find services by name containing (search)
+    List<Service> findByServiceNameContaining(String name);
+    
+    // 5. Find services by price range
+    List<Service> findByPriceBetween(Double minPrice, Double maxPrice);
+    
+    // 6. Count services in a location
+    Long countByLocationId(Integer locationId);
 
-  // Find all services by location name
-  List<Service> findByLocationLocation(String locationName);
-
-  // Check if service exists by name in a specific location
-  boolean existsByServiceNameAndLocationId(
-    String serviceName,
-    Integer locationId
-  );
+    List<Service> findAllWithLocation();
 }

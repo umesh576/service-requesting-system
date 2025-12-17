@@ -1,7 +1,6 @@
 package com.example.serviceFinal.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-// import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,125 +16,114 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "service")
+@Table(name = "services") // Changed to "services" to avoid SQL keyword conflict
 public class Service {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer Id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "service_id")
+    private Integer id;
 
-  @Column(name = "serviceName")
-  @NotBlank(message = "Service name is must important")
-  @Size(
-    min = 3,
-    max = 200,
-    message = "Service name must be more than 3 character and less than 200 character"
-  )
-  private String serviceName;
+    @Column(name = "service_name", nullable = false)
+    @NotBlank(message = "Service name is mandatory")
+    @Size(min = 3, max = 200, message = "Service name must be between 3 and 200 characters")
+    private String serviceName;
 
-  @Column(name = "description")
-  @NotBlank(message = "Description is mandatory.")
-  @Size(
-    min = 20,
-    max = 5000,
-    message = "Description name must be more than 20 character and less than 5000 character"
-  )
-  private String description;
+    @Column(name = "description", columnDefinition = "TEXT")
+    @NotBlank(message = "Description is mandatory")
+    @Size(min = 20, max = 5000, message = "Description must be between 20 and 5000 characters")
+    private String description;
 
-  @Column(name = "serviceImage")
-  private String serviceImage;
+    @Column(name = "service_image")
+    private String serviceImage;
 
-  // Many-to-One relationship with Location
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn
-  /*(name = "location_id", nullable = false)*/
-  @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-  // @NotNull(message = "Location is required")
-  private Location location;
+    @Column(name = "price", nullable = false)
+    @NotNull(message = "Price is mandatory")
+    private Double price;
 
-  @Transient // This field won't be persisted in DB
-  private Integer locationId;
+    // Many-to-One relationship with Location
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @NotNull(message = "Location is required")
+    private Location location;
 
-  // Custom setter for locationId
-  public void setLocationId(Integer locationId) {
-    this.locationId = locationId;
-  }
+    @Transient // This field won't be persisted in DB, used for DTO purposes
+    private Integer locationId;
 
-  // Get locationId from the Location object
-  public Integer getLocationId() {
-    return this.location != null ? this.location.getId() : null;
-  }
+    // Constructors
+    public Service() {}
 
-  @Column(name = "price")
-  // @NotBlank(message = "Price is mandatory")
-  @NotNull(message = "Price is mandatory.")
-  private Double price;
+    public Service(String serviceName, String description, Double price, Location location) {
+        this.serviceName = serviceName;
+        this.description = description;
+        this.price = price;
+        this.location = location;
+    }
 
-  public Double getPrice() {
-    return price;
-  }
+    // Getters and Setters
+    public Integer getId() {
+        return id;
+    }
 
-  public void setPrice(Double price) {
-    this.price = price;
-  }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-  public void setLocation(Location location) {
-    this.location = location;
-  }
+    public String getServiceName() {
+        return serviceName;
+    }
 
-  public Location getLocation() {
-    return location;
-  }
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
 
-  public Service() {}
+    public String getDescription() {
+        return description;
+    }
 
-  public Integer getId() {
-    return Id;
-  }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-  public void setId(Integer id) {
-    Id = id;
-  }
+    public String getServiceImage() {
+        return serviceImage;
+    }
 
-  public String getServiceName() {
-    return serviceName;
-  }
+    public void setServiceImage(String serviceImage) {
+        this.serviceImage = serviceImage;
+    }
 
-  public void setServiceName(String serviceName) {
-    this.serviceName = serviceName;
-  }
+    public Double getPrice() {
+        return price;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public void setPrice(Double price) {
+        this.price = price;
+    }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+    public Location getLocation() {
+        return location;
+    }
 
-  public String getServiceImage() {
-    return serviceImage;
-  }
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 
-  public void setServiceImage(String serviceImage) {
-    this.serviceImage = serviceImage;
-  }
+    // Custom getter for locationId
+    public Integer getLocationId() {
+        return this.location != null ? this.location.getId() : this.locationId;
+    }
 
-  @Override
-  public String toString() {
-    return (
-      "Service [Id=" +
-      Id +
-      ", serviceName=" +
-      serviceName +
-      ", description=" +
-      description +
-      ", serviceImage=" +
-      serviceImage +
-      "]" +
-      "price=[" +
-      price +
-      "]"
-    );
-  }
+    // Custom setter for locationId (for DTO purposes)
+    public void setLocationId(Integer locationId) {
+        this.locationId = locationId;
+    }
+
+    @Override
+    public String toString() {
+        return "Service [id=" + id + ", serviceName=" + serviceName + ", description=" + description + 
+               ", serviceImage=" + serviceImage + ", price=" + price + ", location=" + 
+               (location != null ? location.getLocationName() : "null") + "]";
+    }
 }
