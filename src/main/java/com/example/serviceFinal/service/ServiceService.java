@@ -104,7 +104,7 @@ public class ServiceService {
   public List<Service> getAllServicesWithLocations() {
     List<Service> service = serviceRepository.findAll();
 
-    return service.getLocation();
+    return (List<Service>) ((Service) service).getLocation();
   }
 
   // Get service by ID with location

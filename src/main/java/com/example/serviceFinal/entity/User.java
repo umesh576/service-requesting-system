@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.UniqueElements;
 
 @Entity
 @Table(
@@ -43,6 +44,7 @@ public class User {
   @NotBlank(message = "Email is required")
   @Email(message = "Email should be vaild.")
   @Pattern(regexp = ".+@.+\\..+", message = "Email must be valid format")
+  @UniqueElements(message = "email must be unique")
   private String email;
 
   @Column(name = "password")
@@ -214,5 +216,10 @@ public class User {
       super.toString() +
       "]"
     );
+  }
+
+  public boolean isEnabled() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'isEnabled'");
   }
 }
