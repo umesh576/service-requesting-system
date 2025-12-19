@@ -10,13 +10,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+// import jakarta.persistence.Transient;
+// import jakarta.validation.constraints.NotBlank;
+// import jakarta.validation.constraints.NotNull;
+// import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "services") // Changed to "services" to avoid SQL keyword conflict
+@Table(name = "services")
 public class Service {
 
     @Id
@@ -25,31 +25,22 @@ public class Service {
     private Integer id;
 
     @Column(name = "service_name", nullable = false)
-    @NotBlank(message = "Service name is mandatory")
-    @Size(min = 3, max = 200, message = "Service name must be between 3 and 200 characters")
     private String serviceName;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    @NotBlank(message = "Description is mandatory")
-    @Size(min = 20, max = 5000, message = "Description must be between 20 and 5000 characters")
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "service_image")
     private String serviceImage;
 
-    @Column(name = "price", nullable = false)
-    @NotNull(message = "Price is mandatory")
+    @Column(nullable = false)
     private Double price;
 
-    // Many-to-One relationship with Location
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @NotNull(message = "Location is required")
     private Location location;
 
-    @Transient // This field won't be persisted in DB, used for DTO purposes
-    private Integer locationId;
+
 
     // Constructors
     public Service() {}
@@ -111,14 +102,14 @@ public class Service {
     }
 
     // Custom getter for locationId
-    public Integer getLocationId() {
-        return this.location != null ? this.location.getId() : this.locationId;
-    }
+    // public Integer getLocationId() {
+    //     return this.location != null ? this.location.getId() : this.locationId;
+    // }
 
-    // Custom setter for locationId (for DTO purposes)
-    public void setLocationId(Integer locationId) {
-        this.locationId = locationId;
-    }
+    // // Custom setter for locationId (for DTO purposes)
+    // public void setLocationId(Integer locationId) {
+    //     this.locationId = locationId;
+    // }
 
     @Override
     public String toString() {
