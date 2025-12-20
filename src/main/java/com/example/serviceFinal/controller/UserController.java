@@ -4,6 +4,7 @@ import com.example.serviceFinal.dto.LoginRequest;
 import com.example.serviceFinal.dto.LoginResponse;
 import com.example.serviceFinal.entity.User;
 import com.example.serviceFinal.repository.UserRepository;
+import com.example.serviceFinal.service.JwtService;
 // import com.example.serviceFinal.repository.UserRepository;
 import com.example.serviceFinal.service.UserService;
 // import java.lang.classfile.ClassFile.Option;
@@ -41,6 +42,9 @@ public class UserController {
 
   @Autowired
   private BCryptPasswordEncoder passwordEncoder;
+
+  @Autowired
+  private JwtService jwtservice;
 
   // Add user Api
   @PostMapping("/add")
@@ -121,7 +125,6 @@ public class UserController {
       Optional<User> userOptional = userRepository.findByEmail(
         loginRequest.getEmail()
       );
-      System.out.print(userOptional);
 
       if (userOptional.isEmpty()) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
@@ -147,7 +150,7 @@ public class UserController {
       response.setUser(user); // Optionally include user details
 
       // For token-based authentication (JWT example):
-      String token = generateToken(user);
+      String token = jwtservice.generateToken(user.getEmail(), user.getRole());
       response.setToken(token);
 
       return ResponseEntity.ok(response);
@@ -156,11 +159,5 @@ public class UserController {
         new LoginResponse("Login failed: " + e.getMessage(), false)
       );
     }
-  }
-
-  private String generateToken(User user) {
-    throw new UnsupportedOperationException(
-      "Unimplemented method 'generateToken'"
-    );
   }
 }
