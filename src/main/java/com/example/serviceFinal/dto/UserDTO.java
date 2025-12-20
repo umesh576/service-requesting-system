@@ -15,7 +15,6 @@ public class UserDTO {
     this.id = (long) user.getId();
     this.name = user.getName();
     this.email = user.getEmail();
-    this.enabled = user.isEnabled();
   }
 
   // Getters and setters (must have!)

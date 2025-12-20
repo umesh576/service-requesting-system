@@ -9,15 +9,17 @@ import com.example.serviceFinal.service.UserService;
 // import java.lang.classfile.ClassFile.Option;
 import java.util.List;
 import java.util.Optional;
+import javax.management.RuntimeErrorException;
 // import java.util.stream.Collectors;
 // import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
+// import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,9 +45,18 @@ public class UserController {
   // Add user Api
   @PostMapping("/add")
   @ResponseStatus(code = HttpStatus.CREATED)
-  public ResponseEntity<?> CreateStudent(@RequestBody User user) {
+  public ResponseEntity<?> CreateUser(@ModelAttribute User user) {
     // User savedUser = userRepository.save(user);
     // return ResponseEntity.ok(savedUser);
+    // Validate required fields
+    if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+      throw new RuntimeException("Email is required");
+    }
+    String newemail = user.getEmail();
+    System.out.print(newemail);
+    if (userRepository.findByEmail(newemail).isPresent()) {
+      throw new RuntimeException("Email already exists");
+    }
     User savedUser = userService.registerUser(user);
     return ResponseEntity.ok(savedUser);
   }
@@ -102,12 +113,15 @@ public class UserController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<?> userLogin(@RequestBody LoginRequest loginRequest) {
+  public ResponseEntity<?> userLogin(
+    @ModelAttribute LoginRequest loginRequest
+  ) {
     try {
       // Find user by email
       Optional<User> userOptional = userRepository.findByEmail(
         loginRequest.getEmail()
       );
+      System.out.print(userOptional);
 
       if (userOptional.isEmpty()) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
@@ -127,11 +141,6 @@ public class UserController {
       }
 
       // Check if user is active/enabled
-      if (!user.isEnabled()) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-          new LoginResponse("Account is disabled", false)
-        );
-      }
 
       // Successful login - create response
       LoginResponse response = new LoginResponse("Login successful", true);
