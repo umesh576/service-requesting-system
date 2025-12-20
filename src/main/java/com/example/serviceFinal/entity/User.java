@@ -2,6 +2,8 @@ package com.example.serviceFinal.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -57,11 +59,8 @@ public class User {
   private String password;
 
   @Column(name = "role")
-  @Pattern(
-    regexp = "^(user|admin|moderator)$",
-    message = "Role must be user, admin, or moderator"
-  )
-  private String role = "user";
+  @Enumerated(EnumType.STRING)
+  private Role role;
 
   @Column(name = "location")
   @Size(max = 50, message = "Location cannot exceed 50 characters")
@@ -85,7 +84,7 @@ public class User {
     String name,
     long number,
     String email,
-    String role,
+    Role role,
     String location,
     String dob,
     String otp
@@ -139,11 +138,11 @@ public class User {
     this.password = password;
   }
 
-  public String getRole() {
+  public Role getRole() {
     return role;
   }
 
-  public void setRole(String role) {
+  public void setRole(Role role) {
     this.role = role;
   }
 
@@ -169,6 +168,12 @@ public class User {
 
   public void setOtp(String otp) {
     this.otp = otp;
+  }
+
+  public enum Role {
+    ADMIN,
+    STAFF,
+    USER,
   }
 
   @Override
