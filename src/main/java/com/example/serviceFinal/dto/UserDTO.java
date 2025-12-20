@@ -1,5 +1,6 @@
 package com.example.serviceFinal.dto;
 
+
 import com.example.serviceFinal.entity.User;
 
 // Create this class
@@ -8,13 +9,14 @@ public class UserDTO {
   private Long id;
   private String name;
   private String email;
-  private boolean enabled;
+  private User.Role role;
 
   // Constructor from User entity
   public UserDTO(User user) {
     this.id = (long) user.getId();
     this.name = user.getName();
     this.email = user.getEmail();
+    this.role = user.getRole();
   }
 
   // Getters and setters (must have!)
@@ -38,15 +40,16 @@ public class UserDTO {
     return email;
   }
 
-  public void setEmail(String email) {
+  public void setEmail( String email) {
     this.email = email;
   }
-
-  public boolean isEnabled() {
-    return enabled;
+  public User.Role getRole() {
+    return role;
   }
 
-  public void setEnabled(boolean enabled) {
-    this.enabled = enabled;
+  public void setRole(User.Role role) {
+    this.role = role;
   }
+
+ 
 }

@@ -51,10 +51,10 @@ public class Location {
   }
 
   // Helper method to add service
-  public void addService(Service service) {
-    services.add(service);
-    service.setLocation(this);
-  }
+  // public void addService(Service service) {
+  //   services.add(service);
+  //   service.setLocation(this);
+  // }
 
   // Helper method to remove service
   public void removeService(Service service) {
