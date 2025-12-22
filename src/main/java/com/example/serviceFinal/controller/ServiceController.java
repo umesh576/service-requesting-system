@@ -1,25 +1,32 @@
 package com.example.serviceFinal.controller;
 
 import com.example.serviceFinal.dto.ServiceRequestDTO;
+import com.example.serviceFinal.entity.Location;
 import com.example.serviceFinal.entity.Service;
+import com.example.serviceFinal.repository.LocationRepository;
 import com.example.serviceFinal.repository.ServiceRepository;
 import com.example.serviceFinal.service.CloudinaryService;
+// import jakarta.ws.rs.core.MediaType;
 // import com.example.serviceFinal.service.ServiceService;
-import jakarta.validation.Valid;
+// import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.management.RuntimeErrorException;
-import org.apache.tomcat.util.http.parser.MediaType;
+// import org.apache.tomcat.util.http.parser.MediaType;
+// import javax.management.RuntimeErrorException;
+// import org.apache.tomcat.util.http.parser.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+// import org.springframework.http.MediaType;
+// import org.springframework.http.HttpStatus;
 // import org.springframework.http.MediaType;
 // import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+
+// import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/services")
@@ -35,94 +42,106 @@ public class ServiceController {
   @Autowired
   private CloudinaryService cloudinaryService;
 
-  // Create service with image upload
+  @Autowired
+  private LocationRepository locationRepository;
 
-  // public ResponseEntity<?> createService(
-  //         @RequestParam("serviceName") String serviceName,
-  //         @RequestParam("description") String description,
-  //         @RequestParam("price") Double price,
-  //         @RequestParam("locationId") Integer locationId,
-  //         @RequestParam(value = "image", required = false) MultipartFile serviceImage) {
-
-  //     try {
-  //         String imageUrl = null;
-
-  //         // Upload image if provided
-  //         if (serviceImage != null && !serviceImage.isEmpty()) {
-  //             try {
-  //                 imageUrl = cloudinaryService.uploadFile(serviceImage, "services");
-  //             } catch (IOException e) {
-  //                 Map<String, String> error = new HashMap<>();
-  //                 error.put("error", "Image upload failed: " + e.getMessage());
-  //                 return ResponseEntity.badRequest().body(error);
-  //             }
-  //         }
-
-  //         // Create DTO
-  //         ServiceRequestDTO serviceDTO = new ServiceRequestDTO();
-  //         serviceDTO.setServiceName(serviceName);
-  //         serviceDTO.setDescription(description);
-  //         serviceDTO.setPrice(price);
-  //         serviceDTO.setLocationId(locationId);
-  //         serviceDTO.setServiceImage(imageUrl);
-
-  //         // Create service
-  //         Service savedService = serviceService.createServiceWithImage(serviceDTO, imageUrl);
-  //         return ResponseEntity.status(HttpStatus.CREATED).body(savedService);
-
-  //     } catch (IllegalArgumentException e) {
-  //         Map<String, String> error = new HashMap<>();
-  //         error.put("error", e.getMessage());
-  //         return ResponseEntity.badRequest().body(error);
-  //     } catch (Exception e) {
-  //         Map<String, String> error = new HashMap<>();
-  //         error.put("error", "An error occurred: " + e.getMessage());
-  //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-  //     }
-  // }
   @PostMapping(
     value = "/create",
-    consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE
+    consumes = MediaType.MULTIPART_FORM_DATA_VALUE
   )
-  public ResponseEntity<?> createService(@ModelAttribute Service service) {
+  public ResponseEntity<?> createService(
+    @ModelAttribute ServiceRequestDTO serviceDTO
+  ) throws IOException {
     if (
-      service.getLocation() == null ||
-      service.getPrice() == null ||
-      service.getDescription() == null ||
-      service.getServiceName() == null ||
-      service.getImageFile() == null // Check imageFile, NOT serviceImage!
+      serviceDTO.getServiceName() == null ||
+      serviceDTO.getDescription() == null ||
+      serviceDTO.getPrice() == null ||
+      serviceDTO.getLocationId() == null ||
+      serviceDTO.getImageFile() == null
     ) {
-      throw new RuntimeException("Please Enter data in required field.");
+      throw new RuntimeException("Please enter all required fields");
     }
 
-    String imageUrl = null;
     if (
-      service.getImageFile() != null &&
-      !((MultipartFile) service.getImageFile()).isEmpty()
+      servicerepositry
+        .findByServiceName(serviceDTO.getServiceName())
+        .isPresent()
     ) {
-      try {
-        // Use imageFile, not serviceImage!
-        imageUrl = cloudinaryService.uploadFile(
-          service.getImageFile(), // This is MultipartFile
-          "services"
-        );
-        // Set the URL back to serviceImage field
-        service.setServiceImage(imageUrl);
-      } catch (IOException e) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", "Image upload failed: " + e.getMessage());
-        return ResponseEntity.badRequest().body(error);
-      }
+      throw new RuntimeException("Service already exists");
     }
 
-    String serviceName = service.getServiceName();
-    if (servicerepositry.findByServiceName(serviceName).isPresent()) {
-      throw new RuntimeException("Service is already present");
-    }
+    // ✅ Upload image ONCE
+    String imageUrl = cloudinaryService.uploadFile(
+      serviceDTO.getImageFile(),
+      "services"
+    );
 
-    Service newService = servicerepositry.save(service);
-    return ResponseEntity.ok(newService);
+    // ✅ Fetch location
+    Location location = locationRepository
+      .findById(serviceDTO.getLocationId())
+      .orElseThrow(() -> new RuntimeException("Location not found"));
+
+    // ✅ Create entity
+    Service service = new Service();
+    service.setServiceName(serviceDTO.getServiceName());
+    service.setDescription(serviceDTO.getDescription());
+    service.setPrice(serviceDTO.getPrice());
+    service.setServiceImage(imageUrl);
+    service.setLocation(location);
+
+    return ResponseEntity.ok(servicerepositry.save(service));
   }
+
+  // @PostMapping(
+  //   value = "/create",
+  //   consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE
+  // )
+  // public ResponseEntity<?> createService(
+  //   @ModelAttribute ServiceRequestDTO serviceDTO
+  // ) throws IOException {
+  //   if (
+  //     serviceDTO.getServiceName() == null ||
+  //     serviceDTO.getDescription() == null ||
+  //     serviceDTO.getPrice() == null ||
+  //     serviceDTO.getLocationId() == null ||
+  //     serviceDTO.getImageFile() == null
+  //   ) {
+  //     throw new RuntimeException("Please enter all required fields");
+  //   }
+
+  //   String imageUrl = null;
+  //   if (serviceDTO.getServiceImage() != null) {
+  //     imageUrl = cloudinaryService.uploadFile(
+  //       serviceDTO.getServiceImage(),
+  //       "services"
+  //     );
+  //   }
+
+  //   String serviceName = serviceDTO.getServiceName();
+  //   if (servicerepositry.findByServiceName(serviceName).isPresent()) {
+  //     throw new RuntimeException("Service is already present");
+  //   }
+
+  //   if (
+  //     serviceDTO.getServiceImage() != null &&
+  //     !serviceDTO.getServiceImage().isEmpty()
+  //   ) {
+  //     imageUrl = cloudinaryService.uploadFile(
+  //       serviceDTO.getServiceImage(), // This is MultipartFile
+  //       "services"
+  //     );
+  //   }
+
+  //   // Create Service entity
+  //   Service service = new Service();
+  //   service.setServiceName(serviceDTO.getServiceName());
+  //   service.setDescription(serviceDTO.getDescription());
+  //   service.setPrice(serviceDTO.getPrice());
+  //   // service.setServiceImage(imageUrl); // Store Cloudinary URL
+
+  //   Service newService = servicerepositry.save(service);
+  //   return ResponseEntity.ok(newService);
+  // }
 
   // get all services
   @GetMapping("/")
@@ -165,70 +184,4 @@ public class ServiceController {
     servicerepositry.save(newService);
     return ResponseEntity.ok(newService);
   }
-  //   // Get services by location ID
-  //   @GetMapping("/location/{locationId}")
-  //   public ResponseEntity<List<Service>> getServicesByLocation(
-  //     @PathVariable Integer locationId
-  //   ) {
-  //     List<Service> services = serviceService.getServicesByLocationId(locationId);
-  //     return ResponseEntity.ok(services);
-  //   }
-
-  //   // Get services by location name
-  //   @GetMapping("/location/name/{locationName}")
-  //   public ResponseEntity<List<Service>> getServicesByLocationName(
-  //     @PathVariable String locationName
-  //   ) {
-  //     List<Service> services = serviceService.getServicesByLocationName(
-  //       locationName
-  //     );
-  //     return ResponseEntity.ok(services);
-  //   }
-
-  //   // Update service
-  //   @PutMapping("/{id}")
-  //   public ResponseEntity<?> updateService(
-  //     @PathVariable Integer id,
-  //     @Valid @RequestBody ServiceRequestDTO serviceDTO
-  //   ) {
-  //     try {
-  //       Service updatedService = serviceService.updateService(id, serviceDTO);
-  //       return ResponseEntity.ok(updatedService);
-  //     } catch (IllegalArgumentException e) {
-  //       Map<String, String> error = new HashMap<>();
-  //       error.put("error", e.getMessage());
-  //       return ResponseEntity.badRequest().body(error);
-  //     }
-  //   }
-
-  //   // Delete service
-  //   @DeleteMapping("/{id}")
-  //   public ResponseEntity<?> deleteService(@PathVariable Integer id) {
-  //     try {
-  //       serviceService.deleteService(id);
-  //       Map<String, String> response = new HashMap<>();
-  //       response.put("message", "Service deleted successfully");
-  //       return ResponseEntity.ok(response);
-  //     } catch (IllegalArgumentException e) {
-  //       Map<String, String> error = new HashMap<>();
-  //       error.put("error", e.getMessage());
-  //       return ResponseEntity.badRequest().body(error);
-  //     }
-  //   }
-
-  //   // Check if service exists in location
-  //   @GetMapping("/exists")
-  //   public ResponseEntity<Map<String, Boolean>> checkServiceExists(
-  //     @RequestParam String serviceName,
-  //     @RequestParam Integer locationId
-  //   ) {
-  //     boolean exists = serviceService.serviceExistsInLocation(
-  //       serviceName,
-  //       locationId
-  //     );
-  //     Map<String, Boolean> response = new HashMap<>();
-  //     response.put("exists", exists);
-  //     return ResponseEntity.ok(response);
-  //   }
-  // }
 }

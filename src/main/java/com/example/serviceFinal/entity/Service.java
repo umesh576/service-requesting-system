@@ -28,23 +28,22 @@ public class Service {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "service_id")
   private Integer id;
 
-  @Column(name = "service_name", nullable = false)
+  @Column(nullable = false)
   private String serviceName;
 
-  @Column(columnDefinition = "TEXT", name = "description")
+  @Column(columnDefinition = "TEXT")
   private String description;
-
-  @Column(name = "serviceImage")
-  private String serviceImage;
 
   @Column(nullable = false)
   private Double price;
 
+  @Column(name = "service_image")
+  private String serviceImage; // ✅ URL ONLY
+
   @ManyToOne
-  @JoinColumn(name = "location_id")
+  @JoinColumn(name = "location_id", nullable = false)
   private Location location;
 
   // Constructors

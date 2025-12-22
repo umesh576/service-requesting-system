@@ -16,32 +16,20 @@ public class CloudinaryService {
   @Autowired
   private Cloudinary cloudinary;
 
-  public String uploadFile(MultipartFile file) throws IOException {
+  public String uploadFile(MultipartFile file, String folder)
+    throws IOException {
     File uploadedFile = convertMultiPartToFile(file);
-    Map uploadResult = cloudinary
-      .uploader()
-      .upload(uploadedFile, ObjectUtils.emptyMap());
-    uploadedFile.delete(); // Clean up temp file
-    return uploadResult.get("url").toString();
-  }
-
-  public String uploadFile(Object file, String folder) throws IOException {
     Map options = ObjectUtils.asMap("folder", folder);
-    File uploadedFile = convertMultiPartToFile(file);
     Map uploadResult = cloudinary.uploader().upload(uploadedFile, options);
     uploadedFile.delete();
     return uploadResult.get("url").toString();
   }
 
-  private File convertMultiPartToFile(Object file) throws IOException {
-    File convFile = new File(((MultipartFile) file).getOriginalFilename());
+  private File convertMultiPartToFile(MultipartFile file) throws IOException {
+    File convFile = new File(file.getOriginalFilename());
     FileOutputStream fos = new FileOutputStream(convFile);
-    fos.write(((MultipartFile) file).getBytes());
+    fos.write(file.getBytes());
     fos.close();
     return convFile;
-  }
-
-  public void deleteFile(String publicId) throws IOException {
-    cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
   }
 }
