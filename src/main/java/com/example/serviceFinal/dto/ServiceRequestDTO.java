@@ -7,22 +7,24 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class ServiceRequestDTO {
 
+  @NotBlank(message = "Service name is mandatory")
+  @Size(min = 3, max = 200)
   private String serviceName;
+
+  @NotBlank(message = "Description is mandatory")
+  @Size(min = 20, max = 5000)
   private String description;
+
+  @NotNull(message = "Price is mandatory")
   private Double price;
+
+  @NotNull(message = "Location ID is required")
   private Integer locationId;
 
-  private MultipartFile imageFile; // ✅ FILE
+  @NotNull(message = "Service image is required")
+  private MultipartFile imageFile; // ✅ Must be MultipartFile
 
-  //   public MultipartFile getImageFile() {
-  //     return imageFile;
-  //   }
-
-  public void setImageFile(MultipartFile imageFile) {
-    this.imageFile = imageFile;
-  }
-
-  // Getters and Setters
+  // getters & setters
   public String getServiceName() {
     return serviceName;
   }
@@ -55,11 +57,11 @@ public class ServiceRequestDTO {
     this.locationId = locationId;
   }
 
-  public MultipartFile getServiceImage() {
+  public MultipartFile getImageFile() {
     return imageFile;
   }
 
-  public MultipartFile getImageFile() {
-    return imageFile;
+  public void setImageFile(MultipartFile imageFile) {
+    this.imageFile = imageFile;
   }
 }

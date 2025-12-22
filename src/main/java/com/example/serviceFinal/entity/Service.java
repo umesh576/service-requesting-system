@@ -127,11 +127,4 @@ public class Service {
       "]"
     );
   }
-
-  public Object getImageFile() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException(
-      "Unimplemented method 'getImageFile'"
-    );
-  }
 }

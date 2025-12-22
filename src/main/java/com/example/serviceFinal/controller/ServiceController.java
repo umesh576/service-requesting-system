@@ -33,9 +33,6 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 public class ServiceController {
 
-  //   @Autowired
-  //   private ServiceService serviceService;
-
   @Autowired
   private ServiceRepository servicerepositry;
 
@@ -91,57 +88,6 @@ public class ServiceController {
 
     return ResponseEntity.ok(servicerepositry.save(service));
   }
-
-  // @PostMapping(
-  //   value = "/create",
-  //   consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE
-  // )
-  // public ResponseEntity<?> createService(
-  //   @ModelAttribute ServiceRequestDTO serviceDTO
-  // ) throws IOException {
-  //   if (
-  //     serviceDTO.getServiceName() == null ||
-  //     serviceDTO.getDescription() == null ||
-  //     serviceDTO.getPrice() == null ||
-  //     serviceDTO.getLocationId() == null ||
-  //     serviceDTO.getImageFile() == null
-  //   ) {
-  //     throw new RuntimeException("Please enter all required fields");
-  //   }
-
-  //   String imageUrl = null;
-  //   if (serviceDTO.getServiceImage() != null) {
-  //     imageUrl = cloudinaryService.uploadFile(
-  //       serviceDTO.getServiceImage(),
-  //       "services"
-  //     );
-  //   }
-
-  //   String serviceName = serviceDTO.getServiceName();
-  //   if (servicerepositry.findByServiceName(serviceName).isPresent()) {
-  //     throw new RuntimeException("Service is already present");
-  //   }
-
-  //   if (
-  //     serviceDTO.getServiceImage() != null &&
-  //     !serviceDTO.getServiceImage().isEmpty()
-  //   ) {
-  //     imageUrl = cloudinaryService.uploadFile(
-  //       serviceDTO.getServiceImage(), // This is MultipartFile
-  //       "services"
-  //     );
-  //   }
-
-  //   // Create Service entity
-  //   Service service = new Service();
-  //   service.setServiceName(serviceDTO.getServiceName());
-  //   service.setDescription(serviceDTO.getDescription());
-  //   service.setPrice(serviceDTO.getPrice());
-  //   // service.setServiceImage(imageUrl); // Store Cloudinary URL
-
-  //   Service newService = servicerepositry.save(service);
-  //   return ResponseEntity.ok(newService);
-  // }
 
   // get all services
   @GetMapping("/")
