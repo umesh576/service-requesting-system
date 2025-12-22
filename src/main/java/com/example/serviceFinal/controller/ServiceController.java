@@ -10,9 +10,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.management.RuntimeErrorException;
+import org.apache.tomcat.util.http.parser.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+// import org.springframework.http.MediaType;
+// import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -76,15 +80,39 @@ public class ServiceController {
   //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
   //     }
   // }
-  @PostMapping("/create")
+  @PostMapping(
+    value = "/create",
+    consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE
+  )
   public ResponseEntity<?> createService(@ModelAttribute Service service) {
     if (
       service.getLocation() == null ||
       service.getPrice() == null ||
       service.getDescription() == null ||
-      service.getServiceName() == null
+      service.getServiceName() == null ||
+      service.getImageFile() == null // Check imageFile, NOT serviceImage!
     ) {
-      throw new RuntimeException("Please Enter data in required feild.");
+      throw new RuntimeException("Please Enter data in required field.");
+    }
+
+    String imageUrl = null;
+    if (
+      service.getImageFile() != null &&
+      !((MultipartFile) service.getImageFile()).isEmpty()
+    ) {
+      try {
+        // Use imageFile, not serviceImage!
+        imageUrl = cloudinaryService.uploadFile(
+          service.getImageFile(), // This is MultipartFile
+          "services"
+        );
+        // Set the URL back to serviceImage field
+        service.setServiceImage(imageUrl);
+      } catch (IOException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Image upload failed: " + e.getMessage());
+        return ResponseEntity.badRequest().body(error);
+      }
     }
 
     String serviceName = service.getServiceName();
@@ -94,28 +122,49 @@ public class ServiceController {
 
     Service newService = servicerepositry.save(service);
     return ResponseEntity.ok(newService);
-    // if () return "umesh";
   }
-  //   // Get all services
-  //   @GetMapping
-  //   public ResponseEntity<List<Service>> getAllServices() {
-  //     List<Service> services = serviceService.getAllServicesWithLocations();
-  //     return ResponseEntity.ok(services);
-  //   }
 
-  //   // Get service by ID
-  //   @GetMapping("/{id}")
-  //   public ResponseEntity<?> getServiceById(@PathVariable Integer id) {
-  //     try {
-  //       Service service = serviceService.getServiceById(id);
-  //       return ResponseEntity.ok(service);
-  //     } catch (IllegalArgumentException e) {
-  //       Map<String, String> error = new HashMap<>();
-  //       error.put("error", e.getMessage());
-  //       return ResponseEntity.badRequest().body(error);
-  //     }
-  //   }
+  // get all services
+  @GetMapping("/")
+  public List<Service> getAllLocation() {
+    return (List<Service>) servicerepositry.findAll();
+  }
 
+  //Get service by id
+  @GetMapping("/{id}")
+  public Optional<Service> getServiceById(@PathVariable int id) {
+    return servicerepositry.findById(id);
+  }
+
+  // update service api
+  @PatchMapping("/update")
+  public ResponseEntity<?> updateService(
+    @PathVariable int id,
+    @ModelAttribute Service newService
+  ) {
+    Optional<Service> serviceOptional = servicerepositry.findById(id);
+    if (serviceOptional.isEmpty()) {
+      throw new RuntimeException("Please provide service id for update.");
+    }
+    if (newService.getServiceName() != null) {
+      newService.setServiceName(newService.getServiceName());
+    }
+    if (newService.getDescription() != null) {
+      newService.setDescription(newService.getDescription());
+    }
+    if (newService.getServiceImage() != null) {
+      newService.setServiceImage(newService.getServiceImage());
+    }
+    if (newService.getLocation() != null) {
+      newService.setLocation(newService.getLocation());
+    }
+    if (newService.getPrice() != null) {
+      newService.setPrice(newService.getPrice());
+    }
+
+    servicerepositry.save(newService);
+    return ResponseEntity.ok(newService);
+  }
   //   // Get services by location ID
   //   @GetMapping("/location/{locationId}")
   //   public ResponseEntity<List<Service>> getServicesByLocation(

@@ -10,7 +10,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
+import org.springframework.web.multipart.MultipartFile;
 
 // import jakarta.persistence.Transient;
 // import jakarta.validation.constraints.NotBlank;
@@ -41,13 +43,9 @@ public class Service {
   @Column(nullable = false)
   private Double price;
 
-  // @ManyToOne(fetch = FetchType.LAZY)
-  // @JoinColumn(name = "location_id", nullable = false)
-  // @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-  // private Location location;
-
-  @Column(name = "location")
-  private int location;
+  @ManyToOne
+  @JoinColumn(name = "location_id")
+  private Location location;
 
   // Constructors
   public Service() {}
@@ -56,7 +54,7 @@ public class Service {
     String serviceName,
     String description,
     Double price,
-    Integer location
+    Location location
   ) {
     this.serviceName = serviceName;
     this.description = description;
@@ -93,8 +91,8 @@ public class Service {
     return serviceImage;
   }
 
-  public void setServiceImage(String serviceImage) {
-    this.serviceImage = serviceImage;
+  public void setServiceImage(String imageUrl) {
+    this.serviceImage = imageUrl;
   }
 
   public Double getPrice() {
@@ -105,23 +103,13 @@ public class Service {
     this.price = price;
   }
 
-  public Integer getLocation() {
+  public Location getLocation() {
     return location;
   }
 
-  public void setLocation(Integer location) {
+  public void setLocation(Location location) {
     this.location = location;
   }
-
-  // Custom getter for locationId
-  // public Integer getLocationId() {
-  //     return this.location != null ? this.location.getId() : this.locationId;
-  // }
-
-  // // Custom setter for locationId (for DTO purposes)
-  // public void setLocationId(Integer locationId) {
-  //     this.locationId = locationId;
-  // }
 
   @Override
   public String toString() {
@@ -138,6 +126,13 @@ public class Service {
       price +
       ", location=" +
       "]"
+    );
+  }
+
+  public Object getImageFile() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException(
+      "Unimplemented method 'getImageFile'"
     );
   }
 }
