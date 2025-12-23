@@ -7,6 +7,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.*;
@@ -78,8 +80,20 @@ public class User {
   @Pattern(regexp = "\\d{6}", message = "OTP must contain only digits")
   private String otp;
 
-  @Column(name = "booked_service")
-  private Service service;
+  // @OneToMany
+  // @JoinColumn(name = "booked_service")
+  // private Service service;
+
+  @Column(name = "bookservice_id")
+  private int bookservice_id;
+
+  public int getBookservice_id() {
+    return bookservice_id;
+  }
+
+  public void setBookservice_id(int bookservice_id) {
+    this.bookservice_id = bookservice_id;
+  }
 
   public User() {}
 
@@ -229,12 +243,11 @@ public class User {
   public void setId(Integer id) {
     this.id = id;
   }
+  // public Service getService() {
+  //   return service;
+  // }
 
-  public Service getService() {
-    return service;
-  }
-
-  public void setService(Service service) {
-    this.service = service;
-  }
+  // public void setService(Service service) {
+  //   this.service = service;
+  // }
 }
