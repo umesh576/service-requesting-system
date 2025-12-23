@@ -1,6 +1,8 @@
 package com.example.serviceFinal.controller;
 
 import com.example.serviceFinal.entity.BookService;
+import com.example.serviceFinal.entity.User;
+import com.example.serviceFinal.repository.UserRepository;
 import com.example.serviceFinal.service.BookServiceService;
 import java.util.List;
 import java.util.Optional;
@@ -10,46 +12,44 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/book-services")
 @CrossOrigin(origins = "*")
+@RequestMapping("/book-services")
 public class BookServiceController {
 
   @Autowired
   private BookServiceService bookServiceService;
+
+  @Autowired
+  private UserRepository userRepository;
 
   // Create a new booking
   @PostMapping("/book")
   public ResponseEntity<BookService> createBookService(
     @RequestBody BookService bookService
   ) {
-    try {
-      // Set default status to REQUESTED if not provided
-      if (bookService.getStatus() == null) {
-        bookService.setStatus(BookService.Status.REQUESTED);
-      }
-
-      // Validate required fields
-      if (bookService.getUserId() <= 0) {
-        return ResponseEntity.badRequest().body(null);
-      }
-
-      if (bookService.getServiceId() <= 0) {
-        return ResponseEntity.badRequest().body(null);
-      }
-
-      if (
-        bookService.getTime() == null || bookService.getTime().trim().isEmpty()
-      ) {
-        return ResponseEntity.badRequest().body(null);
-      }
-
-      BookService savedBooking = bookServiceService.saveBookService(
-        bookService
-      );
-      return ResponseEntity.status(HttpStatus.CREATED).body(savedBooking);
-    } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    // 1. Validate user object
+    if (
+      bookService.getUser() == null || bookService.getUser().getId() == null
+    ) {
+      return ResponseEntity.badRequest().build();
     }
+
+    // 2. Fetch user from DB
+    User user = userRepository
+      .findById(bookService.getUser().getId())
+      .orElseThrow(() -> new RuntimeException("User not found"));
+
+    // 3. Set user to booking
+    bookService.setUser(user);
+    bookService.setStatus(BookService.Status.REQUESTED);
+
+    // 4. Save booking
+    BookService savedBooking = bookServiceService.saveBookService(bookService);
+
+    // 5. Optional (for in-memory sync)
+    user.getBookings().add(savedBooking);
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(savedBooking);
   }
 
   @GetMapping("/")

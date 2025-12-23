@@ -1,5 +1,6 @@
 package com.example.serviceFinal.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,12 +13,14 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.*;
+import java.util.ArrayList;
+import java.util.List;
 
 // import org.hibernate.validator.constraints.UniqueElements;
 
 @Entity
 @Table(
-  name = "User",
+  name = "users",
   uniqueConstraints = @UniqueConstraint(columnNames = "email")
 )
 public class User {
@@ -80,19 +83,15 @@ public class User {
   @Pattern(regexp = "\\d{6}", message = "OTP must contain only digits")
   private String otp;
 
-  // @OneToMany
-  // @JoinColumn(name = "booked_service")
-  // private Service service;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private List<BookService> bookings = new ArrayList<>();
 
-  @Column(name = "bookservice_id")
-  private int bookservice_id;
-
-  public int getBookservice_id() {
-    return bookservice_id;
+  public List<BookService> getBookings() {
+    return bookings;
   }
 
-  public void setBookservice_id(int bookservice_id) {
-    this.bookservice_id = bookservice_id;
+  public void setBookings(List<BookService> bookings) {
+    this.bookings = bookings;
   }
 
   public User() {}
@@ -115,7 +114,7 @@ public class User {
     this.otp = otp;
   }
 
-  public int getId() {
+  public Integer getId() {
     return id;
   }
 
@@ -239,15 +238,4 @@ public class User {
       "]"
     );
   }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-  // public Service getService() {
-  //   return service;
-  // }
-
-  // public void setService(Service service) {
-  //   this.service = service;
-  // }
 }
