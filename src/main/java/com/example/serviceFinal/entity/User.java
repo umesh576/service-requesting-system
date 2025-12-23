@@ -78,6 +78,9 @@ public class User {
   @Pattern(regexp = "\\d{6}", message = "OTP must contain only digits")
   private String otp;
 
+  @Column(name = "booked_service")
+  private Service service;
+
   public User() {}
 
   public User(
@@ -221,5 +224,17 @@ public class User {
       super.toString() +
       "]"
     );
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  public Service getService() {
+    return service;
+  }
+
+  public void setService(Service service) {
+    this.service = service;
   }
 }

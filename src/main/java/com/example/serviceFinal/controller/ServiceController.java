@@ -102,7 +102,7 @@ public class ServiceController {
   }
 
   // update service api
-  @PatchMapping("/update")
+  @PatchMapping("/update/{id}")
   public ResponseEntity<?> updateService(
     @PathVariable int id,
     @ModelAttribute Service newService
