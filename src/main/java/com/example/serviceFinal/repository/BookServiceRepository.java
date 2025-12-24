@@ -8,9 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookServiceRepository
   extends JpaRepository<BookService, Integer> {
-  List<BookService> findByUserId(int userId);
-
   List<BookService> findByServiceId(int serviceId);
-
   List<BookService> findByStatus(BookService.Status status);
+  // REMOVE: List<BookService> findByUser_Id(int userId);
 }

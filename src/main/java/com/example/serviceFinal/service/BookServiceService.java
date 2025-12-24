@@ -28,11 +28,17 @@ public class BookServiceService {
   public void deleteBookService(int id) {
     bookServiceRepository.deleteById(id);
   }
+
+  // Update this method name to match repository
   // public List<BookService> getBookServicesByUserId(int userId) {
-  //   return bookServiceRepository.findByUserId(userId);
+  //   return bookServiceRepository.findByUser_Id(userId); // Changed to findByUser_Id
   // }
 
-  // public List<BookService> getBookServicesByServiceId(int serviceId) {
-  //   return bookServiceRepository.findByServiceId(serviceId);
-  // }
+  public List<BookService> getBookServicesByServiceId(int serviceId) {
+    return bookServiceRepository.findByServiceId(serviceId);
+  }
+
+  public List<BookService> getBookServicesByStatus(BookService.Status status) {
+    return bookServiceRepository.findByStatus(status);
+  }
 }

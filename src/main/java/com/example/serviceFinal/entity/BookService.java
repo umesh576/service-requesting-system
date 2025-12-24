@@ -24,9 +24,12 @@ public class BookService {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+  // @ManyToOne
+  // @JoinColumn(name = "user_id", nullable = false)
+  // private User user;
+
+  // @Column(name = "user_Id")
+  // private int user;
 
   @Column(name = "serviceId", nullable = false)
   private int serviceId;
@@ -80,12 +83,11 @@ public class BookService {
   public void setMessage(String message) {
     this.message = message;
   }
+  // public int getUser() {
+  //   return user;
+  // }
 
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
-  }
+  // public void setUser(User user2) {
+  //   this.user = user;
+  // }
 }

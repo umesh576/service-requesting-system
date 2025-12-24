@@ -25,7 +25,7 @@ public class LocationController {
   //   private ServiceService serviceService;
 
   // Create a new location
-  @PostMapping
+  @PostMapping("/add")
   public ResponseEntity<?> createLocation(
     @Valid @RequestBody Location location
   ) {

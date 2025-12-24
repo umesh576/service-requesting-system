@@ -8,6 +8,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 // import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -83,15 +85,15 @@ public class User {
   @Pattern(regexp = "\\d{6}", message = "OTP must contain only digits")
   private String otp;
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-  private List<BookService> bookings = new ArrayList<>();
+  @Column(name = "bookedService_id", nullable = true)
+  private int bookServiceId;
 
-  public List<BookService> getBookings() {
-    return bookings;
+  public int getBookServiceId() {
+    return bookServiceId;
   }
 
-  public void setBookings(List<BookService> bookings) {
-    this.bookings = bookings;
+  public void setBookServiceId(int bookServiceId) {
+    this.bookServiceId = bookServiceId;
   }
 
   public User() {}
