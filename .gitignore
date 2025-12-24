@@ -32,4 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-application.properties
+# .gitignore - Add these lines
+application-local.properties
+*.local.properties
