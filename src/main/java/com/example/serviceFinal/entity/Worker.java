@@ -27,6 +27,17 @@ public class Worker {
   @Column(name = "password")
   private String password;
 
+  @Column(name = "role")
+  private String role = "worker";
+
+  public String getRole() {
+    return role;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
+  }
+
   public String getPassword() {
     return password;
   }

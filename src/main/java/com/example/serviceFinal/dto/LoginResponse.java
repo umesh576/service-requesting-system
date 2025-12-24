@@ -1,6 +1,7 @@
 package com.example.serviceFinal.dto;
 
 import com.example.serviceFinal.entity.User;
+import com.example.serviceFinal.entity.Worker;
 
 public class LoginResponse {
 
@@ -8,6 +9,15 @@ public class LoginResponse {
   private boolean success;
   private String token;
   private UserDTO user; // Change from User to UserDTO
+  private Worker worker;
+
+  public Worker getWorker() {
+    return worker;
+  }
+
+  public void setWorker(Worker worker) {
+    this.worker = worker;
+  }
 
   // Constructor
   public LoginResponse(String message, boolean success) {

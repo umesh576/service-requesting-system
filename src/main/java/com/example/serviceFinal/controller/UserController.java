@@ -45,9 +45,6 @@ public class UserController {
   @PostMapping("/add")
   @ResponseStatus(code = HttpStatus.CREATED)
   public ResponseEntity<?> CreateUser(@ModelAttribute User user) {
-    // User savedUser = userRepository.save(user);
-    // return ResponseEntity.ok(savedUser);
-    // Validate required fields
     if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
       throw new RuntimeException("Email is required");
     }
@@ -111,9 +108,7 @@ public class UserController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<?> userLogin(
-    @RequestBody LoginRequest loginRequest
-  ) {
+  public ResponseEntity<?> userLogin(@RequestBody LoginRequest loginRequest) {
     try {
       // Find user by email
       Optional<User> userOptional = userRepository.findByEmail(
