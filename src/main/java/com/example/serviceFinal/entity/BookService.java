@@ -16,7 +16,8 @@ import jakarta.persistence.Table;
 public class BookService {
 
   public enum Status {
-    SUCESS, // Typo: Should be "SUCCESS"
+    SUCCESS,
+    ASSIGNWORKER,
     REQUESTED,
   }
 

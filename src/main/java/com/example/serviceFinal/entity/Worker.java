@@ -24,11 +24,33 @@ public class Worker {
   @Column(name = "worker_number")
   private String workerNumber;
 
+  @Column(name = "password")
+  private String password;
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
   @Column(name = "Description")
   private String description;
 
   @Column(name = "serviceProvide")
   private String serviceProvide;
+
+  @Column(name = "assign_work")
+  private Integer assignWorkId;
+
+  public Integer getAssignWorkId() {
+    return assignWorkId;
+  }
+
+  public void setAssignWorkId(Integer assignWorkId) {
+    this.assignWorkId = assignWorkId;
+  }
 
   public Integer getId() {
     return id;

@@ -35,7 +35,8 @@ public class WorkerController {
       worker.getServiceProvide() == null ||
       worker.getWorkerEmail() == null ||
       worker.getWorkerName() == null ||
-      worker.getWorkerNumber() == null
+      worker.getWorkerNumber() == null ||
+      worker.getPassword() == null
     ) {
       return ResponseEntity.badRequest()
         .body("Please provide Required details.");
