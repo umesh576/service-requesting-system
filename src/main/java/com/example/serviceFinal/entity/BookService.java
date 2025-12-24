@@ -24,15 +24,8 @@ public class BookService {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
-  // @ManyToOne
-  // @JoinColumn(name = "user_id", nullable = false)
-  // private User user;
-
-  // @Column(name = "user_Id")
-  // private int user;
-
   @Column(name = "serviceId", nullable = false)
-  private int serviceId;
+  private Integer serviceId;
 
   @Column(name = "avaliable_time", nullable = false) // Typo: "available_time"
   private String time;
@@ -44,6 +37,28 @@ public class BookService {
   @Column(name = "message")
   private String message;
 
+  @Column(name = "worker-id")
+  private int workerId;
+
+  public int getWorkerId() {
+    return workerId;
+  }
+
+  public void setWorkerId(int workerId) {
+    this.workerId = workerId;
+  }
+
+  @Column(name = "user_id")
+  private Integer userId;
+
+  public Integer getUserId() {
+    return userId;
+  }
+
+  public void setUserId(Integer userId) {
+    this.userId = userId;
+  }
+
   public int getId() {
     return id;
   }
@@ -52,11 +67,11 @@ public class BookService {
     this.id = id;
   }
 
-  public int getServiceId() {
+  public Integer getServiceId() {
     return serviceId;
   }
 
-  public void setServiceId(int serviceId) {
+  public void setServiceId(Integer serviceId) {
     this.serviceId = serviceId;
   }
 

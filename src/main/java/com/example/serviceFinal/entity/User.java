@@ -88,14 +88,6 @@ public class User {
   @Column(name = "bookedService_id", nullable = true)
   private int bookServiceId;
 
-  public int getBookServiceId() {
-    return bookServiceId;
-  }
-
-  public void setBookServiceId(int bookServiceId) {
-    this.bookServiceId = bookServiceId;
-  }
-
   public User() {}
 
   public User(
@@ -186,6 +178,14 @@ public class User {
 
   public void setOtp(String otp) {
     this.otp = otp;
+  }
+
+  public int getBookServiceId() {
+    return bookServiceId;
+  }
+
+  public void setBookServiceId(int bookServiceId) {
+    this.bookServiceId = bookServiceId;
   }
 
   public enum Role {
