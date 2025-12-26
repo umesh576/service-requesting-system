@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/services")
-@CrossOrigin(origins = "http://localhost:3000")
 public class ServiceController {
 
   @Autowired
@@ -128,4 +127,11 @@ public class ServiceController {
     servicerepositry.save(newService);
     return ResponseEntity.ok(newService);
   }
+
+  @DeleteMapping("/delete/{serviceId}")
+  public ResponseEntity<?> deleteService(@PathVariable Integer serviceId){
+    servicerepositry.deleteById(serviceId);
+    return ResponseEntity.ok("Service is deleted sucessfully");
+  }
+
 }

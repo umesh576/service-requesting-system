@@ -58,7 +58,7 @@ public class User {
 
   @Column(name = "role")
   @Enumerated(EnumType.STRING)
-  private Role role;
+  private Role role = Role.USER;
 
   @Column(name = "location")
   @Size(max = 50, message = "Location cannot exceed 50 characters")

@@ -41,7 +41,7 @@ public class Service {
   private Double price;
 
   @Column(name = "service_image")
-  private String serviceImage; // ✅ URL ONLY
+  private String serviceImage; 
 
   @ManyToOne
   @JoinColumn(name = "location_id", nullable = false)
